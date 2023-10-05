@@ -34,7 +34,7 @@ ws.on('open', () => {
     const session = '~m~55~m~{"m":"chart_create_session","p":["cs_DYd0vcG6Adfb",""]}'
     const timeZone = '~m~57~m~{"m":"switch_timezone","p":["cs_DYd0vcG6Adfb","Etc/UTC"]}'
     const symbol = '~m~144~m~{"m":"resolve_symbol","p":["cs_DYd0vcG6Adfb","sds_sym_1","={\\"adjustment\\":\\"splits\\",\\"session\\":\\"regular\\",\\"symbol\\":\\"BINANCE:BTCUSDT\\"}"]}'
-    const series = '~m~83~m~{"m":"create_series","p":["cs_DYd0vcG6Adfb","sds_1","s1","sds_sym_1","1",50000,""]}'
+    const series = '~m~81~m~{"m":"create_series","p":["cs_DYd0vcG6Adfb","sds_1","s1","sds_sym_1","1",500,""]}'
 
 
 
