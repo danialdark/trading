@@ -131,7 +131,7 @@ ws.on('message', (data) => {
     // console.log(myResult)
     // try {
 
-
+    const candles = []
     const shower = async (result) => {
 
         const jsonData = JSON.parse(result); // Parse the JSON string
@@ -139,9 +139,10 @@ ws.on('message', (data) => {
             if (jsonData.p[1] != undefined) {
                 if (jsonData.p[1].hasOwnProperty("sds_1")) {
                     if (jsonData.p[1].sds_1.hasOwnProperty("s") != undefined) {
-                        console.log(jsonData.p[1].sds_1.s[0].v)
+                        candles.push(jsonData.p[1].sds_1.s[0].v);
 
-                        const candlestickBatch = []
+                        const candlestickBatch = [];
+
                         const candlestickData = candles.map(item => {
                             const timestampSeconds = item[0]; // Unix timestamp in seconds
                             const timestampMilliseconds = timestampSeconds * 1000; // Convert to milliseconds
@@ -166,8 +167,7 @@ ws.on('message', (data) => {
 
 
                         await insertCandlestickBatch("one_minut_spot_candles", candlestickBatch);
-
-
+                        candles = [];
                     }
                 }
             }
