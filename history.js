@@ -1,5 +1,12 @@
 const WebSocket = require('ws');
 
+
+const moment = require('moment');
+
+const db = require('./db'); // Adjust the path as needed
+
+
+
 const serverUrl = 'wss://data.tradingview.com/socket.io/websocket?from=chart%2FTd7zSqMt%2F&date=2023_10_03-11_24&type=chart';
 
 const headers = {
@@ -48,9 +55,55 @@ ws.on('open', () => {
 });
 
 
+
+const insertCandlestickBatch = async (tableName, batch) => {
+    try {
+        await db.tx(async (t) => {
+            for (const record of batch) {
+                const conflictQuery = `
+                    INSERT INTO ${tableName} (symbol_id, symbol_name, open_time, open_price, high_price, low_price, close_price, volumn, close_time, created_at)
+                    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
+                    ON CONFLICT (symbol_name, created_at)
+                    DO UPDATE
+                    SET 
+                        open_time = EXCLUDED.open_time,
+                        open_price = EXCLUDED.open_price,
+                        high_price = EXCLUDED.high_price,
+                        low_price = EXCLUDED.low_price,
+                        close_price = EXCLUDED.close_price,
+                        volumn = EXCLUDED.volumn,
+                        close_time = EXCLUDED.close_time;
+                `;
+
+                await t.none(conflictQuery, [
+                    record.symbol_id,
+                    record.symbol_name,
+                    record.open_time,
+                    record.open_price,
+                    record.high_price,
+                    record.low_price,
+                    record.close_price,
+                    record.volumn,
+                    record.close_time,
+                    record.created_at
+                ]);
+
+                // console.log(`Data inserted or updated into ${tableName} for symbol_name: ${record.symbol_name}, created_at: ${record.created_at}`);
+            }
+        });
+        console.log(`Data inserted or updated into ${tableName} for ${batch.length} records`);
+    } catch (error) {
+        console.error('Error:', error.message);
+    }
+
+};
+
+
+
+
 const candles = [];
 
-const remover = (inputString) => {
+const remover = async (inputString) => {
 
     // Find the index of the first ~
     const firstTildeIndex = inputString.indexOf("~");
@@ -71,6 +124,33 @@ const remover = (inputString) => {
 
             });
         }
+
+        const candlestickBatch = []
+        const candlestickData = candles.map(item => {
+            const timestampSeconds = item[0]; // Unix timestamp in seconds
+            const timestampMilliseconds = timestampSeconds * 1000; // Convert to milliseconds
+            const formattedDateTime = moment(timestampMilliseconds).format('YYYY-MM-DD HH:mm:ss');
+
+            return {
+                symbol_id: 1,
+                symbol_name: "BTCUSDT",
+                open_time: timestampMilliseconds,
+                open_price: item[1],
+                high_price: item[2],
+                low_price: item[3],
+                close_price: item[4],
+                volume: item[5],
+                close_time: timestampMilliseconds, // Assuming each candlestick is for 1 minute
+                created_at: formattedDateTime,
+            };
+        });
+
+        candlestickBatch.push(...candlestickData);
+
+
+
+        await insertCandlestickBatch("one_minut_spot_candles", candlestickBatch);
+
         // console.log(candles[candles.length - 1])
         // return result;
     } else {
@@ -94,7 +174,7 @@ function extractJSONFromMessages(text) {
         });
     } else {
         console.log("No series_loading messages found.");
-        console.log(text)
+        // console.log(text)
     }
 
 
@@ -105,7 +185,7 @@ var vol = 0;
 
 ws.on('message', (data) => {
     const refactored = data.toString('utf-8');
-    console.log(refactored)
+    // console.log(refactored)
 
 
 
@@ -118,7 +198,10 @@ ws.on('message', (data) => {
 
 
 
-    // extractJSONFromMessages(refactored)
+    extractJSONFromMessages(refactored)
+
+
+
 
 
 });
