@@ -139,7 +139,7 @@ const remover = async (inputString) => {
                 high_price: item[2],
                 low_price: item[3],
                 close_price: item[4],
-                volume: item[5],
+                volumn: item[5],
                 close_time: timestampMilliseconds, // Assuming each candlestick is for 1 minute
                 created_at: formattedDateTime,
             };
