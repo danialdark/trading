@@ -172,7 +172,7 @@ ws.on('message', (data) => {
 
 
                         await insertCandlestickBatch("one_minut_spot_candles", candlestickBatch);
-                        candles = [];
+
                     }
                 }
             }
