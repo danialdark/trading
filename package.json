@@ -9,6 +9,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "moment": "^2.29.4",
     "pgp": "^0.1.0",
     "ws": "^8.14.2"
   }
