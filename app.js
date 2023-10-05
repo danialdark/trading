@@ -1,5 +1,10 @@
 const WebSocket = require('ws');
 
+
+const moment = require('moment');
+
+const db = require('./db'); // Adjust the path as needed
+
 const serverUrl = 'wss://data.tradingview.com/socket.io/websocket?from=chart%2FTd7zSqMt%2F&date=2023_10_03-11_24&type=chart';
 
 const headers = {
