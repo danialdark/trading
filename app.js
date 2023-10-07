@@ -31,7 +31,7 @@ ws.on('open', () => {
     const auth = '~m~636~m~{"m":"set_auth_token","p":["eyJhbGciOiJSUzUxMiIsImtpZCI6IkdaeFUiLCJ0eXAiOiJKV1QifQ.eyJ1c2VyX2lkIjo1MzM4MDMzNiwiZXhwIjoxNjk2NDIyNTE0LCJpYXQiOjE2OTY0MDgxMTQsInBsYW4iOiIiLCJleHRfaG91cnMiOjEsInBlcm0iOiIiLCJzdHVkeV9wZXJtIjoiIiwibWF4X3N0dWRpZXMiOjIsIm1heF9mdW5kYW1lbnRhbHMiOjAsIm1heF9jaGFydHMiOjEsIm1heF9hY3RpdmVfYWxlcnRzIjoxLCJtYXhfc3R1ZHlfb25fc3R1ZHkiOjEsIm1heF9hY3RpdmVfcHJpbWl0aXZlX2FsZXJ0cyI6NSwibWF4X2FjdGl2ZV9jb21wbGV4X2FsZXJ0cyI6MSwibWF4X2Nvbm5lY3Rpb25zIjoyfQ.A67QeJ9gJO33nmpaU_RMj_n80MUZIOG5D8dNGSNjz2cchnrI7ebY2kLtwR-sft6784FpL5f1hX1nYpkdJhEz6e-VW6hz1NBSZLwpwveLKJudQaHlPxNwK_fpwsKWkR39USAALJo_zOsrTimAxVbFsMakBdtDjVgg-J3q3YGF1ig"]}'
     const session = '~m~55~m~{"m":"chart_create_session","p":["cs_kzjezFAHehza",""]}'
     const timeZone = '~m~57~m~{"m":"switch_timezone","p":["cs_kzjezFAHehza","Etc/UTC"]}'
-    const symbol = '~m~144~m~{"m":"resolve_symbol","p":["cs_kzjezFAHehza","sds_sym_1","={\\"adjustment\\":\\"splits\\",\\"session\\":\\"regular\\",\\"symbol\\":\\"BINANCE:ETHUSDT\\"}"]}'
+    const symbol = '~m~144~m~{"m":"resolve_symbol","p":["cs_kzjezFAHehza","sds_sym_1","={\\"adjustment\\":\\"splits\\",\\"session\\":\\"regular\\",\\"symbol\\":\\"BINANCE:BTCUSDT\\"}"]}'
     const series = '~m~81~m~{"m":"create_series","p":["cs_kzjezFAHehza","sds_1","s1","sds_sym_1","1",300,""]}'
 
 
@@ -47,6 +47,16 @@ ws.on('open', () => {
     ws.send(symbol);
     ws.send(series);
 });
+
+
+function formatNumberWithTwoDecimals(number) {
+    // Check if the number has a fractional part
+    if (Number.isInteger(number)) {
+        return number + ".00"; // Add ".00" when there's no fractional part
+    } else {
+        return number.toString(); // Convert to a string without changes
+    }
+}
 
 
 
@@ -157,11 +167,11 @@ ws.on('message', (data) => {
                                 symbol_id: 1,
                                 symbol_name: "BTCUSDT",
                                 open_time: timestampMilliseconds,
-                                open_price: item[1],
-                                high_price: item[2],
-                                low_price: item[3],
-                                close_price: item[4],
-                                volumn: item[5],
+                                open_price: formatNumberWithTwoDecimals(item[1]),
+                                high_price: formatNumberWithTwoDecimals(item[2]),
+                                low_price: formatNumberWithTwoDecimals(item[3]),
+                                close_price: formatNumberWithTwoDecimals(item[4]),
+                                volumn: formatNumberWithTwoDecimals(item[5]),
                                 close_time: timestampMilliseconds, // Assuming each candlestick is for 1 minute
                                 created_at: formattedDateTime,
                             };
