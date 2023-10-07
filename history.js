@@ -34,7 +34,7 @@ ws.on('open', () => {
     const session = '~m~55~m~{"m":"chart_create_session","p":["cs_DYd0vcG6Adfb",""]}'
     const timeZone = '~m~57~m~{"m":"switch_timezone","p":["cs_DYd0vcG6Adfb","Etc/UTC"]}'
     const symbol = '~m~144~m~{"m":"resolve_symbol","p":["cs_DYd0vcG6Adfb","sds_sym_1","={\\"adjustment\\":\\"splits\\",\\"session\\":\\"regular\\",\\"symbol\\":\\"BINANCE:BTCUSDT\\"}"]}'
-    const series = '~m~81~m~{"m":"create_series","p":["cs_DYd0vcG6Adfb","sds_1","s1","sds_sym_1","1",500,""]}'
+    const series = '~m~81~m~{"m":"create_series","p":["cs_DYd0vcG6Adfb","sds_1","s1","sds_sym_1","1",1000,""]}'
 
 
 
@@ -120,11 +120,10 @@ const remover = async (inputString) => {
             // candles.push()
             jsonedData.p[1].sds_1.s.forEach(candle => {
                 candles.push(candle.v)
-                console.log(candle.v)
 
             });
         }
-
+        console.log(+item[3])
         const candlestickBatch = []
         const candlestickData = candles.map(item => {
             const timestampSeconds = item[0]; // Unix timestamp in seconds
@@ -135,11 +134,11 @@ const remover = async (inputString) => {
                 symbol_id: 1,
                 symbol_name: "BTCUSDT",
                 open_time: timestampMilliseconds,
-                open_price: item[1],
-                high_price: item[2],
-                low_price: item[3],
-                close_price: item[4],
-                volumn: item[5],
+                open_price: +item[1],
+                high_price: +item[2],
+                low_price: +item[3],
+                close_price: +item[4],
+                volumn: +item[5],
                 close_time: timestampMilliseconds, // Assuming each candlestick is for 1 minute
                 created_at: formattedDateTime,
             };
