@@ -99,6 +99,15 @@ const insertCandlestickBatch = async (tableName, batch) => {
 };
 
 
+function formatNumberWithTwoDecimals(number) {
+    // Check if the number has a fractional part
+    if (Number.isInteger(number)) {
+        return number + ".00"; // Add ".00" when there's no fractional part
+    } else {
+        return number.toString(); // Convert to a string without changes
+    }
+}
+
 
 
 const candles = [];
@@ -133,10 +142,10 @@ const remover = async (inputString) => {
                 symbol_id: 1,
                 symbol_name: "BTCUSDT",
                 open_time: timestampMilliseconds,
-                open_price: parseFloat(item[1]),
-                high_price: parseFloat(item[2]),
-                low_price: parseFloat(item[3]),
-                close_price: parseFloat(item[4]),
+                open_price: formatNumberWithTwoDecimals(item[1]),
+                high_price: formatNumberWithTwoDecimals(item[2]),
+                low_price: formatNumberWithTwoDecimals(item[3]),
+                close_price: formatNumberWithTwoDecimals(item[4]),
                 volumn: +item[5],
                 close_time: timestampMilliseconds, // Assuming each candlestick is for 1 minute
                 created_at: formattedDateTime,
